@@ -5,8 +5,8 @@ set -Eeuo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
-BUILD_DIR="build"
-OUTPUT_DIR="${BUILD_DIR}/rule-sets"
+DIST_DIR="${ROOT}/../dist"
+OUTPUT_DIR="${DIST_DIR}/rule-sets"
 
 
 find_targets() {
@@ -66,14 +66,14 @@ compile_rule() {
 
 archive_rules() {
     local archive_name="mihomo.zip"
-    cd "$BUILD_DIR" && zip -qr "../${archive_name}" rule-sets
+    cd "$DIST_DIR" && zip -qr "${archive_name}" rule-sets
     echo "Archive created: ${archive_name}"
 }
 
 
 main() {
 
-    rm -rf "$BUILD_DIR"
+    rm -rf "$DIST_DIR"
     mkdir -p "$OUTPUT_DIR"
 
 
@@ -83,7 +83,6 @@ main() {
         compile_rule "$meta_path" "$behavior"
 
     done < <(find_targets)
-
 
     archive_rules
 }

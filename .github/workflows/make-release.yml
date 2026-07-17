@@ -41,13 +41,13 @@ jobs:
       - name: Compile Rules
         run: |
           chmod +x rule-sets/${{ matrix.core }}/compile.sh
-          CORE_NAME=${{ matrix.core }} ./rule-sets/${{ matrix.core }}/compile.sh
+          ./rule-sets/${{ matrix.core }}/compile.sh
 
       - name: Upload archive
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.core }}
-          path: rule-sets/${{ matrix.core }}.zip
+          path: ./rule-sets/dist/${{ matrix.core }}.zip
 
   create-release:
     name: Create Release
@@ -64,7 +64,7 @@ jobs:
 
       - name: Generate release name
         id: release_name
-        run: echo "name=$(openssl rand -hex 16)" >> $GITHUB_OUTP
+        run: echo "name=$(openssl rand -hex 16)" >> $GITHUB_OUTPUT
 
       - name: Create release
         uses: softprops/action-gh-release@v2
