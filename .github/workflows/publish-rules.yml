@@ -26,7 +26,7 @@ jobs:
           sudo mv /tmp/mihomo /usr/local/bin/ && mihomo -v
 
       - name: Compile Rules
-        run: chmod +x ./compile-rules.sh && ./compile-rules.sh
+        run: chmod +x ./compile-rules.sh && ./compile-rules.sh 2>&1 | tee compile-output.log
 
       - name: Verify Output
         run: echo "Listing contents of dist/:" && ls -R dist/
