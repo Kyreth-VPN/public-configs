@@ -65,7 +65,10 @@ compile_rule() {
 
     log_info "Compiling Mihomo [${behavior}] ${category}/${rule_name}..."
 
-    mihomo convert-ruleset "$behavior" text "$rule_list_file" "$dest_mrs"
+    if ! mihomo convert-ruleset "$behavior" text "$rule_list_file" "$dest_mrs"; then
+        log_error "Compilation failed for [${behavior}] ${category}/${rule_name} (${rule_list_file})"
+        return 1
+    fi
 
     # Copy the original .list file
     cp "$rule_list_file" "$dest_list"
