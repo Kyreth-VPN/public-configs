@@ -1,6 +1,6 @@
 # Kyreth-VPN Public Configs
 
-A centralized, automated repository for compiling, managing, and distributing proxy rule-sets (Rule Providers) for various proxy cores. 
+A centralized, automated repository for compiling, managing, and distributing proxy rule-sets (Rule Providers) for various proxy cores.
 
 Currently optimized for **Mihomo**, with a modular architecture designed to easily extend support to **Sing-box**, **Stash**, and **Xray** in the future.
 
@@ -18,14 +18,16 @@ Currently optimized for **Mihomo**, with a modular architecture designed to easi
 
 ## 📥 How to Use the Rules
 
-You can directly reference the compiled rule-sets in your proxy client configuration using raw GitHub URLs. 
+You can directly reference the compiled rule-sets in your proxy client configuration using raw GitHub URLs.
 
 ### URL Format
+
 ```text
 https://raw.githubusercontent.com/Kyreth-VPN/public-configs/release/{core}/{category}/{rule-name}.{extension}
 ```
 
 ### Example: Mihomo Rule Provider
+
 To use the `category-vladlink-blocked` rule-set in your Mihomo `config.yaml`, add the following to your `rule-providers` section:
 
 ```yaml
@@ -50,7 +52,9 @@ rules:
 > Both .mrs and .list formats are available in the release branch.
 
 ## ⚙️ How It Works (CI/CD)
+
 The repository relies on a robust, two-stage GitHub Actions pipeline:
+
   1. `publish-rules.yml`:
     - Triggered manually (workflow_dispatch) or on pushes to main.
     - Installs dependencies (yq, mihomo binary).
@@ -67,16 +71,19 @@ The repository relies on a robust, two-stage GitHub Actions pipeline:
   1. Navigate to the appropriate directory (e.g., `mihomo/rule-sets/geosite/`).
   2. Create a new folder named after your rule (e.g., `my-custom-rule`).
   3. Add a `meta.yaml` file defining the behavior:
+
      ``` yaml
      behavior: domain # or 'ipcidr', or 'classical'
      description: >
        My first rule-set.
      ```
- 4. Add a `rule.list` file containing your rules (one per line, # for comments).
- 5. Make Pull Request.
+
+  4. Add a `rule.list` file containing your rules (one per line, # for comments).
+  5. Make Pull Request.
 
 ## 📜 License
-This project is licensed under the terms specified in the [LICENSE](#LICENSE.md) file.
+
+This project is licensed under the terms specified in the [LICENSE](./LICENSE.md) file.
 
 > [!TIP]
 > Always use the release branch URLs for your configurations,
