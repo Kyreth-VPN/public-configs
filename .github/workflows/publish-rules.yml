@@ -4,12 +4,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-publish:
-    name: Build and Publish Rules
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
+  compile-rulesets:
+    name: Compile Rules
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -24,7 +22,7 @@ jobs:
           MIHOMO_VERSION: ${{ vars.MIHOMO_VERSION }}
         run: |
           wget -qO mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
-          gunzip mihomo.gz && chmod +x mihomo
+          gunzip -f mihomo.gz && chmod +x mihomo
           sudo mv mihomo /usr/local/bin/ && mihomo -v
 
       - name: Compile Rules
@@ -33,7 +31,32 @@ jobs:
       - name: Verify Output
         run: echo "Listing contents of dist/:" && ls -R dist/
 
-      - name: Configure Git user
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-rules
+          path: dist/
+          retention-days: 1
+
+  publish-rules:
+    name: Publish to Release Branch
+    runs-on: ubuntu-latest
+    needs: [compile-rulesets]
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: compiled-rules
+          path: dist/
+
+      - name: Configure Git User
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -44,20 +67,20 @@ jobs:
       - name: Clean release Branch
         run: git rm -rf . 2>/dev/null || true
 
-      - name: Copy Compiled Rules 
+      - name: Copy Compiled Rules
         run: cp -r dist/* . && find . -name "meta.yaml" -delete
 
       - name: Commit Changes
         id: commit_step
         run: |
           git add .
-          
+
           if git diff --staged --quiet; then
-            echo "No changes to commit."
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes to commit." && echo "has_changes=false" >> $GITHUB_OUTPUT
+
           else
-            git commit -m "chore: update compiled rules"
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            git commit -m "chore: update compiled rules" && echo "has_changes=true" >> $GITHUB_OUTPUT
+
           fi
 
       - name: Push Changes
