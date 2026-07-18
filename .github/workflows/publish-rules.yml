@@ -21,12 +21,12 @@ jobs:
         env:
           MIHOMO_VERSION: ${{ vars.MIHOMO_VERSION }}
         run: |
-          wget -qO mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
-          gunzip -f mihomo.gz && chmod +x mihomo
-          sudo mv mihomo /usr/local/bin/ && mihomo -v
+          wget -qO /tmp/mihomo.gz "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
+          gunzip -f /tmp/mihomo.gz && chmod +x /tmp/mihomo
+          sudo mv /tmp/mihomo /usr/local/bin/ && mihomo -v
 
       - name: Compile Rules
-        run: ./compile-rules.sh
+        run: chmod +x ./compile-rules.sh && ./compile-rules.sh
 
       - name: Verify Output
         run: echo "Listing contents of dist/:" && ls -R dist/
