@@ -25,17 +25,19 @@ jobs:
 
       - name: Archive Folders
         run: |
-          echo "Archiving core directories..."
+          echo "Archiving .mrs files..."
 
           for dir in */; do
             core_name="${dir%/}"
-            
+
             if [[ -d "$core_name" && "$core_name" != .* ]]; then
-              (cd "$core_name" && zip -qr "../${core_name}.zip" .)
+              if find "$core_name" -type f -name '*.mrs' | grep -q .; then
+                (cd "$core_name" && zip -qr "../${core_name}.zip" $(find . -type f -name '*.mrs' | sed 's#^./##'))
+              fi
             fi
 
           done
-          
+
           echo "Archives created:" && (ls -lh *.zip || echo "No archives were created.")
 
       - name: Generate release name
