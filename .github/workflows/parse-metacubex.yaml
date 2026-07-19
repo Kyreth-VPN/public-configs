@@ -33,7 +33,7 @@ jobs:
           mkdir -p /tmp/metacubex-rules
           
           curl -sL "https://api.github.com/repos/MetaCubeX/meta-rules-dat/git/trees/meta?recursive=1" | \
-            jq -r '.tree[] | select(.path | test("\\.(geoip|geosite)\\.mrs$")) | .path' | \
+            jq -r '.tree[] | select(.path | test("^geo/.*\\.(geoip|geosite)\\.mrs$")) | .path' | \
             while read file; do
               filename=$(basename "$file")
               echo "Downloading $filename..."

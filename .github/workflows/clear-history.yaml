@@ -1,0 +1,22 @@
+name: Clean Workflow History
+
+on:
+  schedule:
+    - cron: '0 0 */2 * *'   # Каждые 2 дня в 00:00 UTC
+
+jobs:
+
+  clean-runs:
+    name: Delete Old Workflow Runs
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    
+    steps:
+      - name: Delete Old Runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 1
+          keep_minimum_runs: 5
