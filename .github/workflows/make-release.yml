@@ -44,6 +44,12 @@ jobs:
         id: release_info
         run: echo "name=$(openssl rand -hex 16)" >> $GITHUB_OUTPUT
 
+      - name: Delete Previous Release
+        uses: dev-drprasad/delete-tag-and-release@v1.1
+        with:
+          tag_name: latest
+          delete_release: true
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
